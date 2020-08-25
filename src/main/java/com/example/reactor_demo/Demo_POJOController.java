@@ -1,3 +1,13 @@
+/*
+ *    ---------------------------------------------------
+ *      Steve Thompson, 2020
+ *
+ *      A RestController to provide an interface for
+ *      demoing some Reactor concepts
+ *
+ *    ---------------------------------------------------
+ */
+
 package com.example.reactor_demo;
 
 import org.springframework.boot.SpringApplication;

@@ -1,3 +1,13 @@
+/*
+ *    ---------------------------------------------------
+ *      Steve Thompson, 2020
+ *
+ *      A simple POJO to encapsulate objects
+ *      for the RestController
+ *
+ *    ---------------------------------------------------
+ */
+
 package com.example.reactor_demo;
 
 import lombok.AllArgsConstructor;
