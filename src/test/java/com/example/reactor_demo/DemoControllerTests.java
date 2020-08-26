@@ -7,6 +7,8 @@ import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
+import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
+
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -25,14 +27,27 @@ class DemoControllerTests {
 	}
 
 	@Test
-	public void givenObjectId_whenGetObject_thenCorrectObjectReturn() throws Exception {
+	public void givenValidObjectId_whenGetObject_thenCorrectObjectReturn() throws Exception {
 
-		var objId = 3;
+		var objId = 4;
 
 		mockMvc.perform(MockMvcRequestBuilders
 				.get("/object/{id}", objId)
 				.accept(MediaType.APPLICATION_JSON))
 				.andDo(print())
-				.andExpect(status().isOk());
+				.andExpect(status().isOk())
+				.andExpect(MockMvcResultMatchers.jsonPath("$.id").value(objId));
+	}
+
+	@Test
+	public void givenInvalidObjectId_whenGetObject_then404() throws Exception {
+		var objId = -999;
+
+		mockMvc.perform(MockMvcRequestBuilders
+				.get("/object/{id}", objId)
+				.accept(MediaType.APPLICATION_JSON))
+				.andDo(print())
+				.andExpect(status().isNotFound());
+
 	}
 }
