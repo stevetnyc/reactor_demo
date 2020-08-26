@@ -20,25 +20,26 @@ import java.util.ArrayList;
 
 @SpringBootApplication
 @RestController
-public class Demo_POJOController {
+public class DemoController {
 
-    private static List<Demo_POJO> pojoList = new ArrayList<>();
+    private static List<DemoPOJO> pojoList = new ArrayList<>();
     static {
-        pojoList.add(new Demo_POJO(1, "First Object"));
-        pojoList.add(new Demo_POJO(2, "Second Object"));
-        pojoList.add(new Demo_POJO(3, "Third Object"));
-        pojoList.add(new Demo_POJO(4, "Fourth Object"));
-        pojoList.add(new Demo_POJO(5, "Fifth Object"));
+        pojoList.add(new DemoPOJO(1, "First Object"));
+        pojoList.add(new DemoPOJO(2, "Second Object"));
+        pojoList.add(new DemoPOJO(3, "Third Object"));
+        pojoList.add(new DemoPOJO(4, "Fourth Object"));
+        pojoList.add(new DemoPOJO(5, "Fifth Object"));
     }
 
     public static void main(String[] args) {
-        SpringApplication.run(Demo_POJOController.class, args);
+        SpringApplication.run(DemoController.class, args);
     }
 
     @GetMapping("/object/{id}")
-    public Demo_POJO getPOJO(@PathVariable int id)
+    public DemoPOJO getPOJO(@PathVariable int id)
             throws InterruptedException {
         Thread.sleep(500);
         return pojoList.stream().filter((object) -> object.getId() == id).findFirst().get();
+
     }
 }

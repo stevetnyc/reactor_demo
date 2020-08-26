@@ -15,7 +15,7 @@ import lombok.Getter;
 
 @Getter
 @AllArgsConstructor
-public class Demo_POJO {
+public class DemoPOJO {
     private long id;
     private String value;
 
