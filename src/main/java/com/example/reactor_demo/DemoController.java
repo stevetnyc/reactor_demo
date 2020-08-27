@@ -32,10 +32,6 @@ public class DemoController {
 
     private static DemoPOJOService pojoService = new DemoPOJOService();
 
-    public static void main(String[] args) {
-        SpringApplication.run(DemoController.class, args);
-    }
-
     @GetMapping("/objects/")
     public List<DemoPOJO> getAllPOJOs()
             throws ResponseStatusException {
