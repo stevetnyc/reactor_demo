@@ -11,6 +11,7 @@
 package com.example.reactor_demo;
 
 import lombok.extern.slf4j.Slf4j;
+import org.apache.tomcat.util.http.fileupload.util.LimitedInputStream;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.http.HttpStatus;
@@ -29,14 +30,7 @@ import java.util.NoSuchElementException;
 @RestController
 public class DemoController {
 
-    private static List<DemoPOJO> pojoList = new ArrayList<>();
-    static {
-        pojoList.add(new DemoPOJO(1, "First Object"));
-        pojoList.add(new DemoPOJO(2, "Second Object"));
-        pojoList.add(new DemoPOJO(3, "Third Object"));
-        pojoList.add(new DemoPOJO(4, "Fourth Object"));
-        pojoList.add(new DemoPOJO(5, "Fifth Object"));
-    }
+    private static DemoPOJOService pojoService = new DemoPOJOService();
 
     public static void main(String[] args) {
         SpringApplication.run(DemoController.class, args);
@@ -44,26 +38,28 @@ public class DemoController {
 
     @GetMapping("/objects/")
     public List<DemoPOJO> getAllPOJOs()
-            throws InterruptedException, ResponseStatusException {
-        try {
-            log.info("Get requested for all objects");
+            throws ResponseStatusException {
+        log.info("Get requested for all objects");
+        List<DemoPOJO> pojoList = pojoService.getAll();
+        if (pojoList != null && pojoList.size() > 0) {
             return pojoList;
-        } catch (NoSuchElementException ex) {
+        } else {
             log.info("Object list was empty");
             throw new ResponseStatusException(
-                    HttpStatus.NOT_FOUND, "POJO not found"
+                    HttpStatus.NO_CONTENT, "POJO List was empty"
             );
         }
-
     }
 
     @GetMapping("/object/{id}")
     public DemoPOJO getPOJO(@PathVariable int id)
             throws InterruptedException, ResponseStatusException {
-        try {
-            log.info("Get requested for object with id {}", id);
-            return pojoList.stream().filter((object) -> object.getId() == id).findFirst().get();
-        } catch (NoSuchElementException ex) {
+        log.info("Get requested for object with id {}", id);
+
+        DemoPOJO pj = pojoService.getById(id);
+        if (pj != null) {
+            return pj;
+        } else {
             log.info("Object with id {} not found", id);
             throw new ResponseStatusException(
                     HttpStatus.NOT_FOUND, "POJO not found"

@@ -9,9 +9,12 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 
+import java.util.List;
+
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.hamcrest.Matchers.hasSize;
 
 @SpringBootTest
 @AutoConfigureMockMvc
@@ -24,6 +27,36 @@ class DemoControllerTests {
 	void contextLoads() {
 		DemoController controller = new DemoController();
 		assertThat(controller).isNotNull();
+	}
+
+	@Test
+	public void givenValidPOJOList_whenGetAll_thenCorrectNumberOfElementsReturned() throws Exception {
+		DemoPOJOService svc = new DemoPOJOService();
+		List<DemoPOJO> pjList = svc.getAll();
+		if (pjList == null) {
+			svc.createState();
+		}
+		int numElements = pjList.size();
+		mockMvc.perform(MockMvcRequestBuilders
+				.get("/objects/")
+				.accept(MediaType.APPLICATION_JSON))
+				.andDo(print())
+				.andExpect(status().isOk())
+				.andExpect(MockMvcResultMatchers.jsonPath("$.*", hasSize(numElements)));
+	}
+
+	@Test
+	public void givenEmptyPOJOList_whenGetALL_then204() throws Exception {
+		DemoPOJOService svc = new DemoPOJOService();
+		List<DemoPOJO> pjList = svc.getAll();
+		if (pjList != null) {
+			svc.eraseState();
+		}
+		mockMvc.perform(MockMvcRequestBuilders
+				.get("/objects/")
+				.accept(MediaType.APPLICATION_JSON))
+				.andDo(print())
+				.andExpect(status().is(204));
 	}
 
 	@Test
