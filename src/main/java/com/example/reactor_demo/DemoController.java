@@ -10,6 +10,7 @@
 
 package com.example.reactor_demo;
 
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.http.HttpStatus;
@@ -23,6 +24,7 @@ import java.util.List;
 import java.util.ArrayList;
 import java.util.NoSuchElementException;
 
+@Slf4j
 @SpringBootApplication
 @RestController
 public class DemoController {
@@ -39,24 +41,15 @@ public class DemoController {
     public static void main(String[] args) {
         SpringApplication.run(DemoController.class, args);
     }
-
+    
     @GetMapping("/object/{id}")
     public DemoPOJO getPOJO(@PathVariable int id)
             throws InterruptedException, ResponseStatusException {
-//        Thread.sleep(500);
-
-//        DemoPOJO obj = pojoList.stream().filter((object) -> object.getId() == id).findFirst().get();
-//        if (obj != null) {
-//            return obj;
-//        } else {
-//            throw new ResponseStatusException(
-//                    HttpStatus.NOT_FOUND, "POJO not found"
-//            );
-//        }
-
         try {
+            log.info("Get requested for object with id {}", id);
             return pojoList.stream().filter((object) -> object.getId() == id).findFirst().get();
         } catch (NoSuchElementException ex) {
+            log.info("Object with id {} not found", id);
             throw new ResponseStatusException(
                     HttpStatus.NOT_FOUND, "POJO not found"
             );
