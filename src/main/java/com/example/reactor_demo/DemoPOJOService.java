@@ -12,27 +12,33 @@ import java.util.NoSuchElementException;
 class DemoPOJOService {
 
     private static List<DemoPOJO> pojoList;
+    private static int nextId;
 
     public DemoPOJOService() {
-        this.createState();
+        nextId = 1;
+        createInitialState(5);
     }
 
-    void createState () {
+    static void createInitialState (int numElements) {
         pojoList = new ArrayList<DemoPOJO>();
-        pojoList.add(new DemoPOJO(1, "First Object"));
-        pojoList.add(new DemoPOJO(2, "Second Object"));
-        pojoList.add(new DemoPOJO(3, "Third Object"));
-        pojoList.add(new DemoPOJO(4, "Fourth Object"));
-        pojoList.add(new DemoPOJO(5, "Fifth Object"));
-        log.info("POJOService: pojoList created");
+        for (int i = 1; i<=numElements; i++){
+            addOnePOJO();
+        }
+        log.info("POJOService: pojoList created with {} elements", numElements);
     }
 
-    List<DemoPOJO> getAll() {
+    static void addOnePOJO() {
+        String val = "Object #" + nextId;
+        pojoList.add(new DemoPOJO(nextId, val));
+        nextId++;
+    }
+
+    static List<DemoPOJO> getAll() {
         log.info("POJOService: getAll()");
         return pojoList;
     }
 
-    DemoPOJO getById(int id) {
+    static DemoPOJO getById(int id) {
         log.info("POJOService: object with id {} requested", id);
         try {
             return pojoList.stream().filter((object) -> object.getId() == id).findFirst().get();
@@ -42,7 +48,7 @@ class DemoPOJOService {
         }
     }
 
-    void eraseState() {
+    static void eraseState() {
         pojoList.clear();
         log.info("POJOService: pojoList erased");
     }

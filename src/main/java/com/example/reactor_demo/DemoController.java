@@ -26,17 +26,16 @@ import java.util.ArrayList;
 import java.util.NoSuchElementException;
 
 @Slf4j
-@SpringBootApplication
 @RestController
 public class DemoController {
 
-    private static DemoPOJOService pojoService = new DemoPOJOService();
+//    private static DemoPOJOService pojoService = new DemoPOJOService();
 
     @GetMapping("/objects/")
     public List<DemoPOJO> getAllPOJOs()
             throws ResponseStatusException {
         log.info("Get requested for all objects");
-        List<DemoPOJO> pojoList = pojoService.getAll();
+        List<DemoPOJO> pojoList = DemoPOJOService.getAll();
         if (pojoList != null && pojoList.size() > 0) {
             return pojoList;
         } else {
@@ -47,12 +46,12 @@ public class DemoController {
         }
     }
 
-    @GetMapping("/object/{id}")
+    @GetMapping("/objects/{id}")
     public DemoPOJO getPOJO(@PathVariable int id)
             throws InterruptedException, ResponseStatusException {
         log.info("Get requested for object with id {}", id);
 
-        DemoPOJO pj = pojoService.getById(id);
+        DemoPOJO pj = DemoPOJOService.getById(id);
         if (pj != null) {
             return pj;
         } else {

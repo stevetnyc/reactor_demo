@@ -1,5 +1,6 @@
 package com.example.reactor_demo;
 
+import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -18,6 +19,7 @@ import static org.hamcrest.Matchers.hasSize;
 
 @SpringBootTest
 @AutoConfigureMockMvc
+@Slf4j
 class DemoControllerTests {
 
 	@Autowired
@@ -31,12 +33,13 @@ class DemoControllerTests {
 
 	@Test
 	public void givenValidPOJOList_whenGetAll_thenCorrectNumberOfElementsReturned() throws Exception {
-		DemoPOJOService svc = new DemoPOJOService();
-		List<DemoPOJO> pjList = svc.getAll();
-		if (pjList == null) {
-			svc.createState();
+			List<DemoPOJO> pjList = DemoPOJOService.getAll();
+		if (pjList != null && pjList.size() == 0) {
+			log.info("Empty POJO List - initializing");
+			DemoPOJOService.createInitialState(5);
 		}
 		int numElements = pjList.size();
+		log.info("Number of elements = {}", numElements);
 		mockMvc.perform(MockMvcRequestBuilders
 				.get("/objects/")
 				.accept(MediaType.APPLICATION_JSON))
@@ -47,10 +50,9 @@ class DemoControllerTests {
 
 	@Test
 	public void givenEmptyPOJOList_whenGetALL_then204() throws Exception {
-		DemoPOJOService svc = new DemoPOJOService();
-		List<DemoPOJO> pjList = svc.getAll();
+		List<DemoPOJO> pjList = DemoPOJOService.getAll();
 		if (pjList != null) {
-			svc.eraseState();
+			DemoPOJOService.eraseState();
 		}
 		mockMvc.perform(MockMvcRequestBuilders
 				.get("/objects/")
@@ -65,7 +67,7 @@ class DemoControllerTests {
 		var objId = 4;
 
 		mockMvc.perform(MockMvcRequestBuilders
-				.get("/object/{id}", objId)
+				.get("/objects/{id}", objId)
 				.accept(MediaType.APPLICATION_JSON))
 				.andDo(print())
 				.andExpect(status().isOk())
@@ -77,7 +79,7 @@ class DemoControllerTests {
 		var objId = -999;
 
 		mockMvc.perform(MockMvcRequestBuilders
-				.get("/object/{id}", objId)
+				.get("/objects/{id}", objId)
 				.accept(MediaType.APPLICATION_JSON))
 				.andDo(print())
 				.andExpect(status().isNotFound());
