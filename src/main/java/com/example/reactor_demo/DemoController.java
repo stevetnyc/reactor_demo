@@ -41,7 +41,22 @@ public class DemoController {
     public static void main(String[] args) {
         SpringApplication.run(DemoController.class, args);
     }
-    
+
+    @GetMapping("/objects/")
+    public List<DemoPOJO> getAllPOJOs()
+            throws InterruptedException, ResponseStatusException {
+        try {
+            log.info("Get requested for all objects");
+            return pojoList;
+        } catch (NoSuchElementException ex) {
+            log.info("Object list was empty");
+            throw new ResponseStatusException(
+                    HttpStatus.NOT_FOUND, "POJO not found"
+            );
+        }
+
+    }
+
     @GetMapping("/object/{id}")
     public DemoPOJO getPOJO(@PathVariable int id)
             throws InterruptedException, ResponseStatusException {
