@@ -11,19 +11,16 @@
 package com.example.reactor_demo;
 
 import lombok.extern.slf4j.Slf4j;
-import org.apache.tomcat.util.http.fileupload.util.LimitedInputStream;
-import org.springframework.boot.SpringApplication;
-import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.reactivestreams.Publisher;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.server.ResponseStatusException;
+import reactor.core.publisher.Mono;
 
-import java.lang.reflect.InvocationTargetException;
 import java.util.List;
-import java.util.ArrayList;
-import java.util.NoSuchElementException;
+
 
 @Slf4j
 @RestController
@@ -62,4 +59,20 @@ public class DemoController {
         }
 
     }
+
+//    *************************************
+//    Routes to consume Reactor streams
+//    *************************************
+
+    @GetMapping("/stream/mono/")
+    public DemoPOJO getMono()
+            throws ResponseStatusException {
+        log.info("Get requested for Mono stream");
+
+        Mono<DemoPOJO> pub = new DemoPublisher().getMono();
+        return pub.block();
+
+
+    }
+
 }

@@ -85,4 +85,15 @@ class DemoControllerTests {
 				.andExpect(status().isNotFound());
 
 	}
+
+	@Test
+	public void givenValidPojoList_whenMonoRouteCalled_thenElement1Returned() throws Exception {
+		mockMvc.perform(MockMvcRequestBuilders
+				.get("/stream/mono/")
+				.accept(MediaType.APPLICATION_JSON))
+				.andDo(print())
+				.andExpect(status().isOk())
+				.andExpect(MockMvcResultMatchers.jsonPath("$.id").value(1));
+
+	}
 }

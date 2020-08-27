@@ -11,7 +11,7 @@ import java.util.NoSuchElementException;
 @Slf4j
 class DemoPOJOService {
 
-    private static List<DemoPOJO> pojoList;
+    private static List<DemoPOJO> pojoList = new ArrayList<DemoPOJO>();
     private static int nextId;
 
     public DemoPOJOService() {
@@ -20,7 +20,9 @@ class DemoPOJOService {
     }
 
     static void createInitialState (int numElements) {
-        pojoList = new ArrayList<DemoPOJO>();
+        if (pojoList.size() > 0) {
+            eraseState();
+        }
         for (int i = 1; i<=numElements; i++){
             addOnePOJO();
         }
@@ -51,5 +53,9 @@ class DemoPOJOService {
     static void eraseState() {
         pojoList.clear();
         log.info("POJOService: pojoList erased");
+    }
+
+    static int getSize() {
+        return pojoList.size();
     }
 }
