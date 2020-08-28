@@ -3,6 +3,7 @@ package com.example.reactor_demo;
 import org.reactivestreams.Publisher;
 import reactor.core.publisher.Mono;
 
+import java.time.Duration;
 import java.util.concurrent.Flow;
 
 public class DemoPublisher {
@@ -15,8 +16,8 @@ public class DemoPublisher {
     }
 
     public Mono<DemoPOJO> getMono() {
-        Mono<DemoPOJO> pub = Mono.just(DemoPOJOService.getById(1));
-
+        Mono<DemoPOJO> pub = Mono.just(DemoPOJOService.getById(1))
+                .delayElement(Duration.ofSeconds(10));
         return pub;
     }
 }

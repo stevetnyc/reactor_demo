@@ -93,7 +93,7 @@ class DemoControllerTests {
 				.accept(MediaType.APPLICATION_JSON))
 				.andDo(print())
 				.andExpect(status().isOk())
-				.andExpect(MockMvcResultMatchers.jsonPath("$.id").value(1));
-
+				.andExpect(MockMvcResultMatchers.jsonPath("$.POJO.id").value(1))
+				.andExpect(MockMvcResultMatchers.jsonPath("$.duration").value(10));
 	}
 }

@@ -18,6 +18,7 @@ import lombok.ToString;
 
 @Getter
 @AllArgsConstructor
+@ToString
 public class DemoPOJO {
 
     @JsonSerialize(using = ToStringSerializer.class)
@@ -25,9 +26,9 @@ public class DemoPOJO {
 
     private final String value;
 
-
     Long getId() {
         return this.id;
     }
+
 
 }

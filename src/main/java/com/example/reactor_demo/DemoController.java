@@ -10,15 +10,22 @@
 
 package com.example.reactor_demo;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
 import org.reactivestreams.Publisher;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.server.ResponseStatusException;
 import reactor.core.publisher.Mono;
 
+import java.net.http.HttpResponse;
+import java.time.Duration;
+import java.time.LocalTime;
 import java.util.List;
 
 
@@ -64,14 +71,41 @@ public class DemoController {
 //    Routes to consume Reactor streams
 //    *************************************
 
-    @GetMapping("/stream/mono/")
-    public DemoPOJO getMono()
-            throws ResponseStatusException {
+    @GetMapping(value = "/stream/mono/",
+            produces = MediaType.APPLICATION_JSON_VALUE)
+    public String getMono()
+            throws ResponseStatusException, JsonProcessingException {
         log.info("Get requested for Mono stream");
 
-        Mono<DemoPOJO> pub = new DemoPublisher().getMono();
-        return pub.block();
+        LocalTime startTime = LocalTime.now();
 
+        Mono<DemoPOJO> pub = new DemoPublisher().getMono();
+        DemoPOJO pojo = pub.block();
+
+        LocalTime endTime = LocalTime.now();
+        Duration duration = Duration.between(startTime, endTime);
+
+        ObjectMapper mapper = new ObjectMapper();
+        String pojoString = mapper.writeValueAsString(pojo);
+
+        StringBuilder respJSON = new StringBuilder();
+        respJSON.append("{");
+        respJSON.append(System.getProperty("line.separator"));
+        respJSON.append("startTime: " + startTime.toString());
+        respJSON.append(",");
+        respJSON.append(System.getProperty("line.separator"));
+        respJSON.append("POJO: ");
+        respJSON.append(pojoString);
+        respJSON.append(",");
+        respJSON.append(System.getProperty("line.separator"));
+         respJSON.append("endTime: " + endTime.toString());
+        respJSON.append(",");
+        respJSON.append(System.getProperty("line.separator"));
+        respJSON.append("duration: " + duration.getSeconds());
+        respJSON.append(System.getProperty("line.separator"));
+        respJSON.append("}");
+
+        return respJSON.toString();
 
     }
 
