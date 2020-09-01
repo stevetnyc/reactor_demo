@@ -21,6 +21,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.server.ResponseStatusException;
+import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 import java.net.http.HttpResponse;
@@ -109,4 +110,16 @@ public class DemoController {
 
     }
 
+    @GetMapping(value = "/stream/flux/",
+            produces = MediaType.APPLICATION_JSON_VALUE)
+    public List<DemoPOJO> getFlux()
+            throws ResponseStatusException {
+        log.info("Get requested for Flux stream");
+
+        List<DemoPOJO> pojos = new DemoPublisher().getFlux()
+                .collectList().block();
+
+        return pojos;
+
+    }
 }

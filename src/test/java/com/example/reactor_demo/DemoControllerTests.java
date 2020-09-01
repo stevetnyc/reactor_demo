@@ -33,7 +33,7 @@ class DemoControllerTests {
 
 	@Test
 	public void givenValidPOJOList_whenGetAll_thenCorrectNumberOfElementsReturned() throws Exception {
-			List<DemoPOJO> pjList = DemoPOJOService.getAll();
+		List<DemoPOJO> pjList = DemoPOJOService.getAll();
 		if (pjList != null && pjList.size() == 0) {
 			log.info("Empty POJO List - initializing");
 			DemoPOJOService.createInitialState(5);
@@ -94,6 +94,22 @@ class DemoControllerTests {
 				.andDo(print())
 				.andExpect(status().isOk())
 				.andExpect(MockMvcResultMatchers.jsonPath("$.POJO.id").value(1))
-				.andExpect(MockMvcResultMatchers.jsonPath("$.duration").value(10));
+				.andExpect(MockMvcResultMatchers.jsonPath("$.duration").value(5));
 	}
-}
+
+	@Test
+	public void givenValidPojoList_whenFluxRouteCalled_thenAllElementsReturned() throws Exception {
+		List<DemoPOJO> pjList = DemoPOJOService.getAll();
+		if (pjList != null && pjList.size() == 0) {
+			log.info("Empty POJO List - initializing");
+			DemoPOJOService.createInitialState(5);
+		}
+		int numElements = pjList.size();
+		log.info("Number of elements = {}", numElements);
+		mockMvc.perform(MockMvcRequestBuilders
+				.get("/stream/flux/")
+				.accept(MediaType.APPLICATION_JSON))
+				.andDo(print())
+				.andExpect(status().isOk())
+				.andExpect(MockMvcResultMatchers.jsonPath("$.*", hasSize(numElements)));
+	}}
