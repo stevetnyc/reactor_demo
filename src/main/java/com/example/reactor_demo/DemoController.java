@@ -13,18 +13,15 @@ package com.example.reactor_demo;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
-import org.reactivestreams.Publisher;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.server.ResponseStatusException;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
-import java.net.http.HttpResponse;
 import java.time.Duration;
 import java.time.LocalTime;
 import java.util.List;
@@ -121,5 +118,14 @@ public class DemoController {
 
         return pojos;
 
+    }
+
+    @GetMapping(value = "/stream/lots/")
+    public Flux<String> getLotsFlux()
+            throws ResponseStatusException {
+        log.info("Get requested for Lots Flux stream");
+
+        return new DemoPublisher().getLots()
+                .map(String::toLowerCase);
     }
 }

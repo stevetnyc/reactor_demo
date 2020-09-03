@@ -1,13 +1,12 @@
 package com.example.reactor_demo;
 
-import org.reactivestreams.Publisher;
+import lombok.extern.slf4j.Slf4j;
 import reactor.core.publisher.Flux;
-import reactor.core.publisher.FluxSink;
 import reactor.core.publisher.Mono;
 
 import java.time.Duration;
-import java.util.concurrent.Flow;
 
+@Slf4j
 public class DemoPublisher {
 
     public DemoPublisher(){
@@ -26,6 +25,24 @@ public class DemoPublisher {
     public Flux<DemoPOJO> getFlux() {
         Flux<DemoPOJO> pub = Flux.fromIterable(DemoPOJOService.getAll());
 
+        return pub;
+    }
+
+    public Flux<String> getLots() {
+        Flux<String> pub = Flux.generate(
+                () -> 0,
+                (state, sink) -> {
+                    log.info("Entered generate()");
+                    state++;
+                    sink.next(DemoPOJOService.getById(state).toString());
+                    if (state > DemoPOJOService.getLastId()) {
+                        log.info("State: {}", state);
+                        sink.complete();
+                    }
+                    return state;
+                });
+        pub.log()
+            .delayElements(Duration.ofSeconds(25));
         return pub;
     }
 }

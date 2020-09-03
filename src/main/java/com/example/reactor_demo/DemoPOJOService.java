@@ -16,7 +16,6 @@ class DemoPOJOService {
 
     public DemoPOJOService() {
         nextId = 1;
-        createInitialState(5);
     }
 
     static void createInitialState (int numElements) {
@@ -29,10 +28,11 @@ class DemoPOJOService {
         log.info("POJOService: pojoList created with {} elements", numElements);
     }
 
-    static void addOnePOJO() {
+    static DemoPOJO addOnePOJO() {
         String val = "Object #" + nextId;
         pojoList.add(new DemoPOJO(nextId, val));
         nextId++;
+        return getById(nextId - 1);
     }
 
     static List<DemoPOJO> getAll() {
@@ -48,6 +48,10 @@ class DemoPOJOService {
             log.info("POJOService: Object with id {} not found", id);
             return null;
         }
+    }
+
+    static int getLastId() {
+        return nextId--;
     }
 
     static void eraseState() {
